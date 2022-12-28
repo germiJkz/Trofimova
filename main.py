@@ -583,7 +583,7 @@ class Report(object):
         options = {'enable-local-file-access': None}
         pdfkit.from_string(pdf_template, 'report.pdf', configuration=config, options=options)
 
-
+example = 1 # переменная, с помощью которой сделается конфликт
 workMode = input('Вакансии или статистика?(укажите одно из двух): ')
 if workMode.lower() == 'вакансии':
     file_name = 'vacancies (2).csv'  # input('Введите название файла: ')
@@ -605,7 +605,6 @@ if workMode.lower() == 'вакансии':
             if input_connect.is_pos_sort:
                 data_set.sort(input_connect.sort_param, input_connect.is_reverse_sort)
             data_set.print_table(lines_to_print, colomns)
-
 elif workMode.lower() == 'статистика':
     file_name = 'vacancies_by_year.csv'  # input('Введите название файла: ')
     vac_name = 'Программист'  # input('Введите название профессии: ')
