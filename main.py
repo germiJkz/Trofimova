@@ -583,7 +583,7 @@ class Report(object):
         options = {'enable-local-file-access': None}
         pdfkit.from_string(pdf_template, 'report.pdf', configuration=config, options=options)
 
-
+example = 2 #провокатор
 workMode = input('Вакансии или статистика?(укажите одно из двух): ')
 if workMode.lower() == 'вакансии':
     file_name = 'vacancies (2).csv'  # input('Введите название файла: ')
