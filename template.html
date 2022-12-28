@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1 style="text-align: center; font-size:30px; font-weight:bold; font-family:Verdana;">
+        Аналитика по зарплатам и городам для профессии {{ vac_name }}
+    </h1>
+    <div style="text-align: center;">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\{{ image_file }}">
+    </div>
+    <h2 style="text-align: center; font-size:25px; font-weight:bold; font-family:Verdana;">
+        Статистика по годам
+    </h2>
+    <table style="text-align: center; font-family:Verdana; border-collapse: collapse; padding: 5px;">
+        <tr style="font-weight:bold;">
+            <th style="border: 1px solid grey;">Год </th>
+            <th style="border: 1px solid grey;">Средняя зарплата </th>
+            <th style="border: 1px solid grey;">Средняя зарплата - {{ vac_name }} </th>
+            <th style="border: 1px solid grey;">Количество вакансий </th>
+            <th style="border: 1px solid grey;">Количество вакансий - {{ vac_name }} </th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[0] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[0]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[0]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[0]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[0]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[1] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[1]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[1]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[1]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[1]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[2] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[2]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[2]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[2]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[2]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[3] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[3]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[3]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[3]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[3]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[4] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[4]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[4]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[4]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[4]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[5] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[5]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[5]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[5]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[5]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[6] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[6]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[6]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[6]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[6]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[7] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[7]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[7]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[7]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[7]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[8] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[8]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[8]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[8]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[8]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[9] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[9]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[9]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[9]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[9]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[10] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[10]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[10]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[10]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[10]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[11] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[11]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[11]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[11]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[11]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[12] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[12]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[12]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[12]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[12]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[13] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[13]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[13]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[13]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[13]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[14] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[14]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[14]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[14]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[14]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[15] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[15]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[15]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[15]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[15]] }}</td>
+        </tr>
+    </table>
+    <h2 style="text-align: center; font-size:25px; font-weight:bold; font-family:Verdana;">
+        Статистика по городам
+    </h2>
+    <div style="text-align: center;">
+        <table width="900" style="text-align: center; font-family:Verdana; border-collapse: collapse; padding: 5px;">
+            <tr style="font-weight:bold;">
+                <th style="border: 1px solid grey;">Город </th>
+                <th style="border: 1px solid grey;">Уровень зарплат </th>
+                <th style="width: 5px;"></th>
+                <th style="border: 1px solid grey;">Город </th>
+                <th style="border: 1px solid grey;">Доля вакансий </th>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[0] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[0]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[0] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[0] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[1] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[1]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[1] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[1] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[2] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[2]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[2] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[2] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[3] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[3]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[3] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[3] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[4] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[4]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[4] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[4] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[5] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[5]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[5] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[5] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[6] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[6]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[6] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[6] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[7] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[7]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[7] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[7] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[8] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[8]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[8] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[8] }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid grey;">{{ cities_salaries[9] }}</td>
+                <td style="border: 1px solid grey;">{{ salary_by_city[cities_salaries[9]] }}</td>
+                <td style="width: 5px;"></td>
+                <td style="border: 1px solid grey;">{{ cities_part[9] }}</td>
+                <td style="border: 1px solid grey;">{{ part_salary_by_city[9] }}</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
