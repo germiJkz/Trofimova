@@ -7,18 +7,57 @@ import matplotlib.pyplot as plt
 import pdfkit
 from jinja2 import Template
 from jinja2 import Environment, FileSystemLoader
+from var_dump import var_dump
+from prettytable import PrettyTable
+from prettytable import ALL
 
-HEAD = ['name', 'salary_from', 'salary_to', 'salary_currency', 'area_name', 'published_at']
+SHORT_HEAD = ['name', 'salary_from', 'salary_to', 'salary_currency', 'area_name', 'published_at']
 YEARS_NULL_DICT = {2007: 0, 2008: 0, 2009: 0, 2010: 0, 2011: 0, 2012: 0, 2013: 0, 2014: 0, 2015: 0, 2016: 0, 2017: 0,
                    2018: 0, 2019: 0, 2020: 0, 2021: 0, 2022: 0}
 CURRENCY_TO_RUB = {"AZN": 35.68, "BYR": 23.91, "EUR": 59.90, "GEL": 21.74, "KGS": 0.76, "KZT": 0.13, "RUR": 1,
                    "UAH": 1.64, "USD": 60.66, "UZS": 0.0055}
+HEAD = ['name', 'description', 'key_skills', 'experience_id', 'premium', 'employer_name', 'salary_from',
+        'salary_to', 'salary_gross', 'salary_currency', 'area_name', 'published_at']
+RUS_HEAD = ['Оклад', 'Название', 'Описание', 'Навыки', 'Опыт работы', 'Премиум-вакансия', 'Компания',
+            'Нижний порог оклада', 'Верхний порог оклада', 'С учётом налогов', 'Идентификатор валюты оклада',
+            'Название региона', 'Дата публикации вакансии']
+RUS_HEAD_FOR_PRINT = ['№', 'Название', 'Описание', 'Навыки', 'Опыт работы', 'Премиум-вакансия', 'Компания', 'Оклад',
+                      'Название региона', 'Дата публикации вакансии']
+WORK_EXPERIENCE = {"noExperience": "Нет опыта", "between1And3": "От 1 года до 3 лет",
+                   "between3And6": "От 3 до 6 лет", "moreThan6": "Более 6 лет"}
+WORK_EXPERIENCE_BACK = {"Нет опыта": "noExperience", "От 1 года до 3 лет": "between1And3",
+                        "От 3 до 6 лет": "between3And6", "Более 6 лет": "moreThan6"}
+WORK_EXPERIENCE_FOR_SORT = {"noExperience": "а", "Нет опыта": "а", "between1And3": "б", "От 1 года до 3 лет": "б",
+                            "between3And6": "в", "От 3 до 6 лет": "в", "moreThan6": "г", "Более 6 лет": "г"}
+BOOL_TRANSLATE = {'TRUE': 'Да', 'True': 'Да', 'FALSE': 'Нет', 'False': 'Нет'}
+BOOL_TRANSLATE_BACK = {'Да': 'TRUE', 'Нет': 'FALSE'}
+CURRENCY = {"AZN": "Манаты", "BYR": "Белорусские рубли", "EUR": "Евро", "GEL": "Грузинский лари",
+            "KGS": "Киргизский сом", "KZT": "Тенге", "RUR": "Рубли", "UAH": "Гривны", "USD": "Доллары",
+            "UZS": "Узбекский сум"}
+CURRENCY_BACK = {"Манаты": "AZN", "Белорусские рубли": "BYR", "Евро": "EUR", "Грузинский лари": "GEL",
+                 "Киргизский сом": "KGS", "Тенге": "KZT", "Рубли": "RUR", "Гривны": "UAH", "Доллары": "USD",
+                 "Узбекский сум": "UZS"}
 
 
 def clean_int_point(number):
     if '.0' in number:
         number = number[:-2]
     return number
+
+
+def clean_int(number):
+    if '.0' in number:
+        number = number[:-2]
+    if len(number) > 3 and number[-4] != ' ':
+        number = number[:-3] + ' ' + number[-3:]
+    return number
+
+
+def convert_data(string):
+    day = string[8:10]
+    month = string[5:7]
+    year = string[:4]
+    return day + '.' + month + '.' + year
 
 
 def calculate_salary_rating(vacancies):
@@ -30,6 +69,213 @@ def calculate_salary_rating(vacancies):
         medium_salary += (int(clean_int_point(vacancy.salary_from)) + int(
             clean_int_point(vacancy.salary_to))) * coef // 2
     return medium_salary // len(vacancies)
+
+
+class DataSetForTable(object):
+
+    def __init__(self, file_name):
+        list_vac_dict = self.csv_parser(file_name)
+
+        self.file_name = file_name
+        if not list_vac_dict:
+            self.vacancies_objects = []
+        else:
+            self.vacancies_objects = [VacancyForTable(vac_dict) for vac_dict in list_vac_dict]
+
+    def csv_parser(self, file_name):
+        is_head = True
+        rows = []
+        with open(file_name, encoding='utf-8-sig') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                row = list(filter(None, row))
+                if is_head:
+                    is_head = False
+                    head = row
+                    coll_number = len(head)
+                elif coll_number == len(row):
+                    rows.append(row)
+        list_vac_dict = []
+        for row in rows:
+            vacancy_dict = dict.fromkeys(HEAD)
+            for i in range(len(HEAD)):
+                key = HEAD[i]
+                value = " ".join(re.sub(re.compile('<.*?>'), '', row[i]).replace('\n', '###')
+                                 .replace('\r\n', '').split())
+                vacancy_dict[key] = value
+            list_vac_dict.append(vacancy_dict)
+        return list_vac_dict
+
+    def filter(self, filter_param):
+        filtered_vacancy = []
+        index = filter_param.index(':')
+        param_name = filter_param[:index]
+        param_value = filter_param[index + 2:]
+        if param_name == 'Название':
+            for vacancy in self.vacancies_objects:
+                if vacancy.name == param_value:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Описание':
+            for vacancy in self.vacancies_objects:
+                if vacancy.description == param_value:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Компания':
+            for vacancy in self.vacancies_objects:
+                if vacancy.employer_name == param_value:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Название региона':
+            for vacancy in self.vacancies_objects:
+                if vacancy.area_name == param_value:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Опыт работы':
+            for vacancy in self.vacancies_objects:
+                if vacancy.experience_id == WORK_EXPERIENCE_BACK[param_value]:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Премиум-вакансия':
+            for vacancy in self.vacancies_objects:
+                if vacancy.premium.lower() == BOOL_TRANSLATE_BACK[param_value].lower():
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Идентификатор валюты оклада':
+            for vacancy in self.vacancies_objects:
+                if vacancy.salary.salary_currency == CURRENCY_BACK[param_value]:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Оклад':
+            for vacancy in self.vacancies_objects:
+                if int(vacancy.salary.salary_from) <= int(param_value) <= int(vacancy.salary.salary_to):
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Дата публикации вакансии':
+            for vacancy in self.vacancies_objects:
+                data = convert_data(vacancy.published_at)
+                if data == param_value:
+                    filtered_vacancy.append(vacancy)
+        elif param_name == 'Навыки':
+            for vacancy in self.vacancies_objects:
+                need_skills = param_value.split(', ')
+                counter = 0
+                for n_skill in need_skills:
+                    if n_skill in vacancy.key_skills:
+                        counter += 1
+                if counter == len(need_skills):
+                    filtered_vacancy.append(vacancy)
+
+        self.vacancies_objects = filtered_vacancy
+
+    def translate(self):
+        for vacancy in self.vacancies_objects:
+            vacancy.experience_id = WORK_EXPERIENCE[vacancy.experience_id]
+            vacancy.premium = BOOL_TRANSLATE[vacancy.premium]
+            vacancy.salary.salary_gross = BOOL_TRANSLATE[vacancy.salary.salary_gross]
+
+            year = vacancy.published_at[:4]
+            month = vacancy.published_at[5:7]
+            day = vacancy.published_at[8:10]
+            hour = vacancy.published_at[11:13]
+            min = vacancy.published_at[14:16]
+            sec = vacancy.published_at[17:19]
+            vacancy.published_at = year + '.' + month + '.' + day + ' ' + hour + ':' + min + ':' + sec
+
+    def sort(self, sort_param, is_reverse_sort):
+        if sort_param == 'Название':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.name, reverse=is_reverse_sort)
+        elif sort_param == 'Описание':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.description,
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Компания':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.employer_name,
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Название региона':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.area_name,
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Премиум-вакансия':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.premium,
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Опыт работы':
+            self.vacancies_objects = sorted(self.vacancies_objects,
+                                            key=lambda vac: WORK_EXPERIENCE_FOR_SORT[vac.experience_id],
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Навыки':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: len(vac.key_skills),
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Оклад':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.salary.get_convert_salary(),
+                                            reverse=is_reverse_sort)
+        elif sort_param == 'Дата публикации вакансии':
+            self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.published_at,
+                                            reverse=is_reverse_sort)
+
+    def print_table(self, lines_to_print, colomns):
+        table = PrettyTable()
+        table._max_width = {'№': 20, 'Название': 20, 'Описание': 20, 'Навыки': 20, 'Опыт работы': 20,
+                            'Премиум-вакансия': 20, 'Компания': 20, 'Оклад': 20, 'Название региона': 20,
+                            'Дата публикации вакансии': 20}
+        table.hrules = ALL
+        table.align = 'l'
+        table.field_names = RUS_HEAD_FOR_PRINT
+        for i in range(len(self.vacancies_objects)):
+            vacancy = self.vacancies_objects[i]
+            row = [str(i + 1), vacancy.name, vacancy.description, '\n'.join(vacancy.key_skills), vacancy.experience_id,
+                   vacancy.premium, vacancy.employer_name, vacancy.salary.string_for_table, vacancy.area_name,
+                   convert_data(vacancy.published_at)]
+            for j in range(len(row)):
+                item = row[j]
+                if len(item) > 100:
+                    row[j] = item[:100] + '...'
+            table.add_row(row)
+
+        if colomns == '':
+            colomns = table.field_names
+        else:
+            colomns = colomns.split(', ')
+            colomns.insert(0, '№')
+        if lines_to_print == '':
+            table = table.get_string(fields=colomns)
+        elif ' ' in lines_to_print:
+            lines_to_print = lines_to_print.split(' ')
+            table = table.get_string(start=int(lines_to_print[0]) - 1, end=int(lines_to_print[1]) - 1, fields=colomns)
+        else:
+            table = table.get_string(start=int(lines_to_print) - 1, fields=colomns)
+
+        print(table)
+
+
+class VacancyForTable(object):
+
+    def __init__(self, vac_dict):
+        self.name = vac_dict['name']
+        self.description = vac_dict['description']
+        self.key_skills = vac_dict['key_skills'].split('###')
+        self.experience_id = vac_dict['experience_id']
+        self.premium = vac_dict['premium']
+        self.employer_name = vac_dict['employer_name']
+        self.salary = SalaryForTable(vac_dict['salary_from'], vac_dict['salary_to'], vac_dict['salary_gross'],
+                                     vac_dict['salary_currency'])
+        self.area_name = vac_dict['area_name']
+        self.published_at = vac_dict['published_at']
+
+
+class SalaryForTable(object):
+
+    def __init__(self, salary_from, salary_to, salary_gross, salary_currency):
+        self.salary_from = salary_from
+        self.salary_to = salary_to
+        self.salary_gross = salary_gross
+        self.salary_currency = salary_currency
+        self.string_for_table = self.get_string_for_table()
+
+    def get_convert_salary(self):
+        currency_to_rub = {"AZN": 35.68, "BYR": 23.91, "EUR": 59.90, "GEL": 21.74, "KGS": 0.76, "KZT": 0.13, "RUR": 1,
+                           "UAH": 1.64, "USD": 60.66, "UZS": 0.0055}
+        coef = currency_to_rub[self.salary_currency]
+        return (int(clean_int_point(self.salary_from)) * coef + int(clean_int_point(self.salary_to)) * coef) // 2
+
+    def get_string_for_table(self):
+        salary = clean_int(self.salary_from) + ' - ' + clean_int(self.salary_to) + ' (' + CURRENCY[
+            self.salary_currency] + ') ('
+        if self.salary_gross == 'Да' or self.salary_gross == 'True' or self.salary_gross == 'TRUE':
+            salary += 'Без вычета налогов)'
+        else:
+            salary += 'С вычетом налогов)'
+        return salary
 
 
 class DataSet(object):
@@ -60,7 +306,7 @@ class DataSet(object):
 
     def csv_parser(self, file_name):
         is_head = True
-        # coll_number = len(HEAD)
+        # coll_number = len(SHORT_HEAD)
         list_vac_dict = []
         with open(file_name, encoding='utf-8-sig') as file:
             reader = csv.reader(file)
@@ -125,6 +371,47 @@ class City(object):
         self.medium_salary = 0
         self.vacancies = []
         self.part = 0
+
+
+class InputConect(object):
+
+    def __init__(self, file_name, filter_param, sort_param, reverse_sort):
+        num_lines = sum(1 for line in open(file_name, encoding='utf-8-sig'))
+        self.is_empty = num_lines == 0
+        self.is_no_data = num_lines == 1
+        self.is_pos_filter = filter_param != ''
+        self.filter_param = filter_param
+        self.is_pos_sort = sort_param != ''
+        self.sort_param = sort_param
+        self.is_reverse_sort = reverse_sort == 'Да'
+        self.reverse_sort = reverse_sort
+        self.is_printable = self.chek_errors()
+
+    def chek_errors(self):
+        is_printable = True
+        if self.is_empty:
+            print('Пустой файл')
+            is_printable = False
+        if self.is_no_data:
+            print('Нет данных')
+            is_printable = False
+        if ': ' not in self.filter_param and self.filter_param != '':
+            print('Формат ввода некорректен')
+            is_printable = False
+        elif self.filter_param != '':
+            if self.filter_param[:self.filter_param.index(':')] not in RUS_HEAD:
+                print('Параметр поиска некорректен')
+                is_printable = False
+
+        if self.sort_param not in RUS_HEAD and self.sort_param != '':
+            is_printable = False
+            print('Параметр сортировки некорректен')
+
+        if self.reverse_sort != 'Да' and self.reverse_sort != 'Нет' and self.reverse_sort != '':
+            print('Порядок сортировки задан некорректно')
+            is_printable = False
+
+        return is_printable
 
 
 class Report(object):
@@ -297,19 +584,44 @@ class Report(object):
         pdfkit.from_string(pdf_template, 'report.pdf', configuration=config, options=options)
 
 
-file_name = 'vacancies_by_year.csv'  # input('Введите название файла: ')
-vac_name = 'Программист'  # input('Введите название профессии: ')
+workMode = input('Вакансии или статистика?(укажите одно из двух): ')
+if workMode.lower() == 'вакансии':
+    file_name = 'vacancies (2).csv'  # input('Введите название файла: ')
+    filter_param = ''  # input('Введите параметр фильтрации: ')
+    sort_param = 'Оклад'  # input('Введите параметр сортировки: ')
+    reverse_sort = 'Да'  # input('Обратный порядок сортировки (Да / Нет): ')
+    lines_to_print = ''  # input('Введите диапазон вывода: ')
+    colomns = ''  # input('Введите требуемые столбцы: ')
 
-data_set = DataSet(file_name, vac_name)
-new_report = Report(data_set, vac_name)
+    input_connect = InputConect(file_name, filter_param, sort_param, reverse_sort)
+    if input_connect.is_printable:
+        data_set = DataSetForTable(file_name)
+        if input_connect.is_pos_filter:
+            data_set.filter(input_connect.filter_param)
+        if not data_set.vacancies_objects:
+            print('Ничего не найдено')
+        else:
+            data_set.translate()
+            if input_connect.is_pos_sort:
+                data_set.sort(input_connect.sort_param, input_connect.is_reverse_sort)
+            data_set.print_table(lines_to_print, colomns)
 
-print(new_report.salary_by_year)
-print(new_report.salary_by_year_by_vacancy)
-print(new_report.count_salary_by_year)
-print(new_report.count_salary_by_year_by_vacancy)
-print(new_report.salary_by_city)
-print(new_report.part_salary_by_city)
+elif workMode.lower() == 'статистика':
+    file_name = 'vacancies_by_year.csv'  # input('Введите название файла: ')
+    vac_name = 'Программист'  # input('Введите название профессии: ')
 
-new_report.generate_excel()
-new_report.generate_image()
-new_report.generate_pdf("graph.png")
+    data_set = DataSet(file_name, vac_name)
+    new_report = Report(data_set, vac_name)
+
+    print(new_report.salary_by_year)
+    print(new_report.salary_by_year_by_vacancy)
+    print(new_report.count_salary_by_year)
+    print(new_report.count_salary_by_year_by_vacancy)
+    print(new_report.salary_by_city)
+    print(new_report.part_salary_by_city)
+
+    new_report.generate_excel()
+    new_report.generate_image()
+    new_report.generate_pdf("graph.png")
+else:
+    console.log('Вы ввели что-то не то')
