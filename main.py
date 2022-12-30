@@ -10,6 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 from var_dump import var_dump
 from prettytable import PrettyTable
 from prettytable import ALL
+import doctest
 
 SHORT_HEAD = ['name', 'salary_from', 'salary_to', 'salary_currency', 'area_name', 'published_at']
 YEARS_NULL_DICT = {2007: 0, 2008: 0, 2009: 0, 2010: 0, 2011: 0, 2012: 0, 2013: 0, 2014: 0, 2015: 0, 2016: 0, 2017: 0,
@@ -40,12 +41,26 @@ CURRENCY_BACK = {"Манаты": "AZN", "Белорусские рубли": "BY
 
 
 def clean_int_point(number):
+    """Убирает символы '.0' в конце входной строки, используется для корректоного отображения чисел
+    Args:
+     number (str): число в виде строки
+    Returns:
+         str: число в виде строки без '.0'
+    """
     if '.0' in number:
         number = number[:-2]
     return number
 
 
 def clean_int(number):
+    """ Убирает символы '.0' в конце входной строки, ставляет пробелы между каждыми 3 разрядами,
+     используется для корректоного отображения чисел
+
+    Args:
+     number (str): число в виде строки
+    Returns:
+         str: число в виде строки без '.0' и с пробелами
+    """
     if '.0' in number:
         number = number[:-2]
     if len(number) > 3 and number[-4] != ' ':
@@ -54,6 +69,13 @@ def clean_int(number):
 
 
 def convert_data(string):
+    """ Преобразует дату в читаемый вид для корректного отображения
+
+    Args:
+     string (str): дата вида '2022-07-05T18:19:30+0300'
+    Returns:
+        str: дата вида '05.07.2022'
+    """
     day = string[8:10]
     month = string[5:7]
     year = string[:4]
@@ -61,6 +83,13 @@ def convert_data(string):
 
 
 def calculate_salary_rating(vacancies):
+    """ Считает среднюю зарплату из списка вакансий с учётом разных валют
+
+    Args:
+     vacancies: список вакансий типа Vacancy
+    Returns:
+         int: средняя зарплата
+    """
     if len(vacancies) == 0:
         return 0
     medium_salary = 0
@@ -72,8 +101,18 @@ def calculate_salary_rating(vacancies):
 
 
 class DataSetForTable(object):
+    """ Класс для представления датасета, на основе которого построится таблица
 
+    Attributes:
+        file_name (str): имя csv-файла, в котором хранятся сведения о вакансиях
+        vacancies_objects ([Vacancy]): массив объектов типа Vacancy, все вакансии в датасете
+    """
     def __init__(self, file_name):
+        """Инициализирует dataset
+
+        Args:
+             file_name (str): имя csv-файла, в котором хранятся сведения о вакансиях
+        """
         list_vac_dict = self.csv_parser(file_name)
 
         self.file_name = file_name
@@ -83,6 +122,13 @@ class DataSetForTable(object):
             self.vacancies_objects = [VacancyForTable(vac_dict) for vac_dict in list_vac_dict]
 
     def csv_parser(self, file_name):
+        """ Читает файл, распарсивает его, записывает данные в список словарей
+
+        Args:
+            file_name(str): имя csv-файла, в котором хранятся сведения о вакансиях
+        Returns:
+            [dict]: список словарей(каждый словарь - вакансия)
+        """
         is_head = True
         rows = []
         with open(file_name, encoding='utf-8-sig') as file:
@@ -107,6 +153,12 @@ class DataSetForTable(object):
         return list_vac_dict
 
     def filter(self, filter_param):
+        """ Фильтрует вакансии по введённому параметру. Если он пустой, то фильтрация не производится.
+        Изменяет атрибут vacancies_objects.
+
+        Args:
+            filter_param (str): параметр для фильтрации
+        """
         filtered_vacancy = []
         index = filter_param.index(':')
         param_name = filter_param[:index]
@@ -161,6 +213,9 @@ class DataSetForTable(object):
         self.vacancies_objects = filtered_vacancy
 
     def translate(self):
+        """ Переводит поля experience_id, premium, salary.salary_gross и преобразует дату к виду 'YYYY.MM.DD HH:MM:SS'
+        Изменяет атрибут vacancies_objects.
+        """
         for vacancy in self.vacancies_objects:
             vacancy.experience_id = WORK_EXPERIENCE[vacancy.experience_id]
             vacancy.premium = BOOL_TRANSLATE[vacancy.premium]
@@ -175,6 +230,12 @@ class DataSetForTable(object):
             vacancy.published_at = year + '.' + month + '.' + day + ' ' + hour + ':' + min + ':' + sec
 
     def sort(self, sort_param, is_reverse_sort):
+        """ Сортирует вакансии по определённому параметру
+        Изменяет атрибут vacancies_objects.
+        Args:
+            sort_param (str): параметр сортировки
+            is_reverse_sort (bool): обратный порядок сортировки
+        """
         if sort_param == 'Название':
             self.vacancies_objects = sorted(self.vacancies_objects, key=lambda vac: vac.name, reverse=is_reverse_sort)
         elif sort_param == 'Описание':
@@ -204,6 +265,12 @@ class DataSetForTable(object):
                                             reverse=is_reverse_sort)
 
     def print_table(self, lines_to_print, colomns):
+        """ Печатает таблицу с определёнными строками и столбцами
+        Args:
+            lines_to_print (str): номера строк, которые необходимо вывести вида '10 20'(Если пустая строка - печатается
+                                 всё).
+            colomns (str): название столбцов через запятую, которые нужно вывести(Если пустая строка - печатается всё).
+        """
         table = PrettyTable()
         table._max_width = {'№': 20, 'Название': 20, 'Описание': 20, 'Навыки': 20, 'Опыт работы': 20,
                             'Премиум-вакансия': 20, 'Компания': 20, 'Оклад': 20, 'Название региона': 20,
@@ -239,8 +306,23 @@ class DataSetForTable(object):
 
 
 class VacancyForTable(object):
-
+    """ Класс для представления вакансии, на основе которых построится таблица
+    Attributes:
+        name(str): название вакансии
+        description(str): описание вакансии
+        key_skills(str): необходимые навыки
+        experience_id(str): опыт работы
+        premium(str): является ли эта вакансия премиальной
+        employer_name(str): название огранизации
+        salary(SalaryForTable): зарплата
+        area_name(str): название города, населённого пункта
+        published_at(str): дата публикации
+    """
     def __init__(self, vac_dict):
+        """ Инициализирует вакансию, путём конвертирования значений словаря в атрибуты вакансии
+        Args:
+            vac_dict(dict): словарь вакансии
+        """
         self.name = vac_dict['name']
         self.description = vac_dict['description']
         self.key_skills = vac_dict['key_skills'].split('###')
@@ -254,8 +336,24 @@ class VacancyForTable(object):
 
 
 class SalaryForTable(object):
+    """Класс для представления зарплаты, на основе которой построится таблица
+
+    Attributes:
+        salary_from(str): нижняя граница зп
+        salary_to(str): верхняя граница зп
+        salary_gross(str): вычет налогов
+        salary_currency(str): валюта
+        string_for_table(str): строка для отображения зп в таблице
+    """
 
     def __init__(self, salary_from, salary_to, salary_gross, salary_currency):
+        """Инициализирует зарплату
+        Args:
+            salary_from(str): нижняя граница зп
+            salary_to(str): верхняя граница зп
+            salary_gross(str): вычет налогов
+            salary_currency(str): валюта
+        """
         self.salary_from = salary_from
         self.salary_to = salary_to
         self.salary_gross = salary_gross
@@ -263,12 +361,22 @@ class SalaryForTable(object):
         self.string_for_table = self.get_string_for_table()
 
     def get_convert_salary(self):
+        """Считает зп в рублях
+
+        Returns:
+            int: сконвертированная зп в рублях
+        """
         currency_to_rub = {"AZN": 35.68, "BYR": 23.91, "EUR": 59.90, "GEL": 21.74, "KGS": 0.76, "KZT": 0.13, "RUR": 1,
                            "UAH": 1.64, "USD": 60.66, "UZS": 0.0055}
         coef = currency_to_rub[self.salary_currency]
         return (int(clean_int_point(self.salary_from)) * coef + int(clean_int_point(self.salary_to)) * coef) // 2
 
     def get_string_for_table(self):
+        """генерирует строку для отображения зп в таблице
+
+        Returns:
+             str: строкa для отображения зп в таблице
+        """
         salary = clean_int(self.salary_from) + ' - ' + clean_int(self.salary_to) + ' (' + CURRENCY[
             self.salary_currency] + ') ('
         if self.salary_gross == 'Да' or self.salary_gross == 'True' or self.salary_gross == 'TRUE':
@@ -279,8 +387,22 @@ class SalaryForTable(object):
 
 
 class DataSet(object):
-
+    """Класс для представления датасета
+    Attributes:
+        file_name (str): имя csv-файла с данными о вакансиях
+        vacancies_objects ([Vacancy]): список вакансий
+        years_list ([Year]): список годов
+        cities_list ([City]): список городов
+        cities_sort_by_salary ([City]): список городов, сортированных по зп по убыванию
+        cities_sort_by_part ([City]): список городов, сортированных по кол-ву вакансий по убыванию
+    """
     def __init__(self, file_name, vac_name):
+        """инициализирует объект датасет
+
+        Args:
+            file_name (str): имя csv-файла с данными о вакансиях
+            vac_name (str): название профессии, для которой будет отдельная статистика
+        """
         list_vac_dict = self.csv_parser(file_name)
 
         self.file_name = file_name
@@ -305,6 +427,13 @@ class DataSet(object):
         self.cities_sort_by_part = sorted(self.cities_list, key=lambda city: city.part, reverse=True)
 
     def csv_parser(self, file_name):
+        """Читает файл, записывает данные в список словарей
+
+        Args:
+            file_name: имя csv-файла с данными о вакансиях
+        Returns:
+            [dict]: список словарей, где каждый словарь хранит в себе данные о вакансиях
+        """
         is_head = True
         # coll_number = len(SHORT_HEAD)
         list_vac_dict = []
@@ -327,6 +456,14 @@ class DataSet(object):
         return list_vac_dict
 
     def collect_years(self, vac_name):
+        """Распределяет вакансии по годам и городам
+
+        Args:
+            vac_name: имя csv-файла с данными о вакансиях
+        Returns:
+            [Year]: список годов
+            [City]: список городов
+        """
         years_list = [Year(number) for number in range(2007, 2023)]
         cities_list = []
         city_names = []
@@ -344,8 +481,21 @@ class DataSet(object):
 
 
 class Vacancy(object):
-
+    """Класс представляет вакансию
+    Attributes:
+        name (str): название
+        salary_from (str): нижняя граница зп
+        salary_to (str): верхняя граница зп
+        salary_currency (str): валюта
+        area_name (str): название компании
+        published_at (str): дата публикации
+    """
     def __init__(self, vac_dict):
+        """Инициализирует объект типа Vacancy
+
+        Args:
+            vac_dict (dict): словарь, хранящий сведения о вакансии
+        """
         self.name = vac_dict['name']
         self.salary_from = vac_dict['salary_from']
         self.salary_to = vac_dict['salary_to']
@@ -355,8 +505,19 @@ class Vacancy(object):
 
 
 class Year(object):
-
+    """класс для представления года
+    Attributes:
+        number (int): номер
+        vacancies ([]): список вакансий
+        param_vacancies ([]): список вакансий определённой профессии
+        salary_rating (int): средняя зп
+        param_salary_rating (int): средняя зп для определённой профессии
+    """
     def __init__(self, number):
+        """инициализирует объект типа Year
+        Args:
+            number(int): номер года
+        """
         self.number = number
         self.vacancies = []
         self.param_vacancies = []
@@ -365,8 +526,19 @@ class Year(object):
 
 
 class City(object):
+    """класс для представления города
+    Attributes:
+        name (str): название
+        medium_salary (int): средняя зп по городу
+        vacancies ([]): список вакансий
+        part (float): доля вакансий этого города ко всем вакансиям
+    """
 
     def __init__(self, name):
+        """инициализирует объект типа City
+        Args:
+            name(str): название
+        """
         self.name = name
         self.medium_salary = 0
         self.vacancies = []
@@ -374,8 +546,27 @@ class City(object):
 
 
 class InputConect(object):
+    """класс для проверки корректности введённых данных
+    Attributes:
+        is_empty (bool): если пустой файл
+        is_no_data (bool): если нет данных в файле
+        is_pos_filter (bool): если параметр фильтровки не пустой
+        filter_param (str): параметр фильтрации
+        is_pos_sort (bool): если параметр сортировки не пустой
+        sort_param (str): параметр сортировки
+        is_reverse_sort (bool): если обратная сортировка
+        reverse_sort (str): обратная сортировка(да/нет)
+        is_printable (bool): если можно печатать таблицу
+    """
 
     def __init__(self, file_name, filter_param, sort_param, reverse_sort):
+        """инициализирует объект типа InputConnect
+        Args:
+            file_name (str): имя csv-файла
+            filter_param (str): параметр фильтрации
+            sort_param (str): параметр сортировки
+            reverse_sort (str): обратная сортировка(да/нет)
+        """
         num_lines = sum(1 for line in open(file_name, encoding='utf-8-sig'))
         self.is_empty = num_lines == 0
         self.is_no_data = num_lines == 1
@@ -388,6 +579,10 @@ class InputConect(object):
         self.is_printable = self.chek_errors()
 
     def chek_errors(self):
+        """ проверяет корректность входных данных
+        Returns:
+            bool: можно ли начинать обработку файла
+        """
         is_printable = True
         if self.is_empty:
             print('Пустой файл')
@@ -415,8 +610,26 @@ class InputConect(object):
 
 
 class Report(object):
+    """класс для формирования отчётов
+    Attributes:
+        data_set (DataSet): датасет на основе котрого будут формироваться отчёты
+        salary_by_year ({int: int}): словарь с данными о средней зп за каждый год
+        count_salary_by_year ({int: int}): словарь с данными о кол-ве вакансий за каждый год
+        salary_by_year_by_vacancy ({int: int}): словарь с данными о средней зп за каждый год для определённой професии
+        count_salary_by_year_by_vacancy ({int: int}): словарь с данными о кол-ве вакансий за каждый год для
+                                                    определённой професии
+        salary_by_city ({str: int}): словарь с данными о средней зп о каждом городе (топ 10)
+        part_salary_by_city ({str: float}): словарь с данными о доле вакансий о каждом городе (топ 10)
+        procent_salary_by_city ([str]): список  с данными о доле вакансий о каждом городе (топ 10) в виде процентов
+        vac_name (str): название проффесии, для которой будет отдельная статистика
+    """
 
     def __init__(self, data_set, vac_name):
+        """инициализирует объект типа Report
+        Args:
+            data_set (DataSet): датасет на основе котрого будут формироваться отчёты
+            vac_name (str): название проффесии, для которой будет отдельная статистика
+        """
         self.data_set = data_set
         self.salary_by_year = {year.number: int(clean_int_point(str(year.salary_rating))) for year in
                                data_set.years_list if year.salary_rating != 0}
@@ -434,6 +647,8 @@ class Report(object):
         self.vac_name = vac_name
 
     def generate_excel(self):
+        """Генерирует xlsx-файл со статистикой
+        """
         book = openpyxl.Workbook()
         sheet1 = book.active
         sheet1.title = 'Статистика по годам'
@@ -520,6 +735,8 @@ class Report(object):
         book.save("report.xlsx")
 
     def generate_image(self):
+        """Генерирует png-файл со статистикой(диаграммы и графики)
+        """
 
         yearsX = list(self.salary_by_year.keys())
         years1 = [n - 0.2 for n in yearsX]
@@ -563,6 +780,10 @@ class Report(object):
         plt.savefig('graph.png')
 
     def generate_pdf(self, image_name):
+        """Генерирует pdf-файл со статистикой
+        Args:
+            image_name (str): имя png-файла с графиками 
+        """
         env = Environment(loader=FileSystemLoader('.'))
         template = env.get_template("template.html")
 
@@ -583,7 +804,7 @@ class Report(object):
         options = {'enable-local-file-access': None}
         pdfkit.from_string(pdf_template, 'report.pdf', configuration=config, options=options)
 
-example = 1 # переменная, с помощью которой сделается конфликт
+
 workMode = input('Вакансии или статистика?(укажите одно из двух): ')
 if workMode.lower() == 'вакансии':
     file_name = 'vacancies (2).csv'  # input('Введите название файла: ')
