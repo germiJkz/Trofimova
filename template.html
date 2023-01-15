@@ -7,7 +7,8 @@
         Аналитика по зарплатам и городам для профессии {{ vac_name }}
     </h1>
     <div style="text-align: center;">
-        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\{{ image_file }}">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\Report\{{ image_files[0] }}">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\Report\{{ image_files[1] }}">
     </div>
     <h2 style="text-align: center; font-size:25px; font-weight:bold; font-family:Verdana;">
         Статистика по годам
@@ -132,7 +133,26 @@
             <td style="border: 1px solid grey;">{{ count_salary_by_year[years[15]] }}</td>
             <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[15]] }}</td>
         </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[16] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[16]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[16]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[16]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[16]] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[17] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year[years[17]] }}</td>
+            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[17]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[17]] }}</td>
+            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[17]] }}</td>
+        </tr>
     </table>
+
+    <div style="text-align: center;">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\Report\{{ image_files[2] }}">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\Report\{{ image_files[3] }}">
+    </div>
     <h2 style="text-align: center; font-size:25px; font-weight:bold; font-family:Verdana;">
         Статистика по городам
     </h2>
