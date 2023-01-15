@@ -77,76 +77,6 @@
             <td style="border: 1px solid grey;">{{ count_salary_by_year[years[7]] }}</td>
             <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[7]] }}</td>
         </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[8] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[8]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[8]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[8]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[8]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[9] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[9]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[9]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[9]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[9]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[10] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[10]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[10]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[10]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[10]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[11] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[11]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[11]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[11]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[11]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[12] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[12]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[12]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[12]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[12]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[13] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[13]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[13]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[13]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[13]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[14] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[14]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[14]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[14]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[14]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[15] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[15]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[15]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[15]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[15]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[16] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[16]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[16]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[16]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[16]] }}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid grey;">{{ years[17] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year[years[17]] }}</td>
-            <td style="border: 1px solid grey;">{{ salary_by_year_by_vacancy[years[17]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year[years[17]] }}</td>
-            <td style="border: 1px solid grey;">{{ count_salary_by_year_by_vacancy[years[17]] }}</td>
-        </tr>
     </table>
 
     <div style="text-align: center;">
@@ -237,6 +167,80 @@
             </tr>
         </table>
     </div>
+    <h2 style="text-align: center; font-size:25px; font-weight:bold; font-family:Verdana;">
+        Статистика по навыкам
+    </h2>
+    <table style="text-align: center; font-family:Verdana; border-collapse: collapse; padding: 5px;">
+        <tr style="font-weight:bold;">
+            <th style="border: 1px solid grey;">Год </th>
+            <th style="border: 1px solid grey;">Самый популярный скилл </th>
+            <th style="border: 1px solid grey;">Количество упоминаний </th>
+            <th style="border: 1px solid grey;">Самый популярный скилл для {{ vac_name }} </th>
+            <th style="border: 1px solid grey;">Количество упоминаний</th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[0] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[0] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[0] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[0] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[0] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[1] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[1] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[1] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[1] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[1] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[2] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[2] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[2] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[2] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[2] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[3] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[3] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[3] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[3] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[3] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[4] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[4] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[4] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[4] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[4] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[5] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[5] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[5] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[5] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[5] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[6] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[6] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[6] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[6] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[6] }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid grey;">{{ years[7] }}</td>
+            <td style="border: 1px solid grey;">{{ skills[7] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values[7] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_param[7] }}</td>
+            <td style="border: 1px solid grey;">{{ skills_values_param[7] }}</td>
+        </tr>
+
+    </table>
+    <div style="text-align: center;">
+        <img  src="C:\Users\Olga\PycharmProjects\Trofimova\Report\{{ image_files[4] }}">
+    </div>
+    <p>Самый самый частый навык - {{ best_skill }}, {{ best_skill_score }} упоминаний.</p>
+    <p>Самый самый частый навык для Python-разработчика - {{ best_skill_param }}, {{ best_skill_score_param }} упоминаний.</p>
 
 </body>
 </html>

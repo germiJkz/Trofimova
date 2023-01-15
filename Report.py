@@ -40,6 +40,8 @@ class Report(object):
                                data_set.cities_sort_by_salary[:10]}
         self.part_salary_by_city = {city.name: round(city.part, 4) for city in data_set.cities_sort_by_part[:10]}
         self.procent_salary_by_city = [str(int(n * 10000) / 100) + '%' for n in self.part_salary_by_city.values()]
+        self.skills_by_year = {year.number: year.get_max_skill() for year in data_set.years_list}
+        self.skills_by_year_param = {year.number: year.get_max_skill_param() for year in data_set.years_list}
         self.vac_name = vac_name
 
     def generate_excel(self):
@@ -76,24 +78,24 @@ class Report(object):
         sheet1['E1'].style = topic_style
 
         years = list(YEARS_NULL_DICT.keys())
-        for i in range(2, 20):
+        for i in range(2, 9):
             sheet1['A' + str(i)] = years[i - 2]
             sheet1['A' + str(i)].style = text_style
 
-        for i in range(2, 20):
-            sheet1['B' + str(i)] = self.salary_by_year[i - 2 + 2005]
+        for i in range(2, 9):
+            sheet1['B' + str(i)] = self.salary_by_year[i - 2 + 2015]
             sheet1['B' + str(i)].style = text_style
 
-        for i in range(2, 20):
-            sheet1['C' + str(i)] = self.salary_by_year_by_vacancy[i - 2 + 2005]
+        for i in range(2, 9):
+            sheet1['C' + str(i)] = self.salary_by_year_by_vacancy[i - 2 + 2015]
             sheet1['C' + str(i)].style = text_style
 
-        for i in range(2, 20):
-            sheet1['D' + str(i)] = self.count_salary_by_year[i - 2 + 2005]
+        for i in range(2, 9):
+            sheet1['D' + str(i)] = self.count_salary_by_year[i - 2 + 2015]
             sheet1['D' + str(i)].style = text_style
 
-        for i in range(2, 20):
-            sheet1['E' + str(i)] = self.count_salary_by_year_by_vacancy[i - 2 + 2005]
+        for i in range(2, 9):
+            sheet1['E' + str(i)] = self.count_salary_by_year_by_vacancy[i - 2 + 2015]
             sheet1['E' + str(i)].style = text_style
 
         sheet2 = book.create_sheet('Статистика по городам')
@@ -180,10 +182,30 @@ class Report(object):
         fig.tight_layout()
         plt.savefig('report/part_count_by_sities.png')
 
+        skills1 = [list(self.skills_by_year[year].values())[0] for year in range(2015, 2023)]
+        skills2 = [list(self.skills_by_year_param[year].values())[0] for year in range(2015, 2023)]
+        labels1 = [list(self.skills_by_year[year].keys())[0] for year in range(2015, 2023)]
+        labels2 = [list(self.skills_by_year_param[year].keys())[0] for year in range(2015, 2023)]
+        fig, axe = plt.subplots()
+        axe.set_title('Самые популярные навыки по годам', {'fontsize': 16})
+        axe.set_ylabel('Количество упоминаний')
+        axe.set_xticks(years_x)
+        axe.tick_params(axis='x', rotation=90, labelsize=10)
+        axe.tick_params(axis='y', labelsize=10)
+        axe.bar(years1, skills1, label='для всех вакансий ', width=0.4)
+        axe.bar(years2, skills2, label='для ' + str(self.vac_name), width=0.4)
+        axe.grid(axis='y')
+        axe.legend(fontsize=10)
+        for i in range(8):
+            plt.text(2015 + i - 0.3, 5, labels1[i], rotation=90, fontsize=12, color='w')
+        for i in range(8):
+            plt.text(2015 + i + 0.05, skills2[i] + 5, labels2[i], rotation=90, fontsize=12, color='k')
+        plt.savefig('report/skills_by_years.png')
+
     def generate_pdf(self, image_names):
         """Генерирует pdf-файл со статистикой
         Args:
-            image_name (str): имя png-файла с графиками
+            image_names ([str]): имя png-файла с графиками
         """
         env = Environment(loader=FileSystemLoader('.'))
         template = env.get_template("template.html")
@@ -198,7 +220,19 @@ class Report(object):
                                         'cities_salaries': list(self.salary_by_city.keys()),
                                         'salary_by_city': self.salary_by_city,
                                         'cities_part': list(self.part_salary_by_city.keys()),
-                                        'part_salary_by_city': self.procent_salary_by_city
+                                        'part_salary_by_city': self.procent_salary_by_city,
+                                        'skills': [list(self.skills_by_year[year].keys())[0] for year in
+                                                   range(2015, 2023)],
+                                        'skills_values': [list(self.skills_by_year[year].values())[0] for year in
+                                                          range(2015, 2023)],
+                                        'skills_param': [list(self.skills_by_year_param[year].keys())[0] for year in
+                                                         range(2015, 2023)],
+                                        'skills_values_param': [list(self.skills_by_year_param[year].values())[0] for
+                                                                year in range(2015, 2023)],
+                                        'best_skill': self.data_set.best_skill,
+                                        'best_skill_score': self.data_set.best_skill_score,
+                                        'best_skill_param': self.data_set.best_skill_param,
+                                        'best_skill_score_param': self.data_set.best_skill_score_param,
                                         })
 
         config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')

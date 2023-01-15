@@ -17,10 +17,9 @@ class Vacancy(object):
             vac_dict (dict): словарь, хранящий сведения о вакансии
         """
         self.name = vac_dict['name']
-        self.skills = vac_dict['key_skills']
+        self.skills = list(vac_dict['key_skills'].replace('\"', '').split(', '))
         self.salary_from = vac_dict['salary_from']
         self.salary_to = vac_dict['salary_to']
         self.salary_currency = vac_dict['salary_currency']
         self.area_name = vac_dict['area_name']
         self.published_at = vac_dict['published_at']
-        

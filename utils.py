@@ -43,3 +43,14 @@ def calculate_salary_rating(vacancies):
         medium_salary += (int(clean_int_point(vacancy.salary_from)) + int(
             clean_int_point(vacancy.salary_to))) * coef // 2
     return medium_salary // len(vacancies)
+
+
+def get_skills_dict(vacancies):
+    skills_dict = {}
+    for vacancy in vacancies:
+        for skill in vacancy.skills:
+            if skill not in skills_dict.keys():
+                skills_dict.update({skill: 1})
+            else:
+                skills_dict[skill] += 1
+    return skills_dict
